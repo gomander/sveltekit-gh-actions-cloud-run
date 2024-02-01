@@ -75,7 +75,8 @@ npm run test:integration
 
 In the case that you've used this repository as a base, you must either replace
 the environment variables in `.github/workflows/main.yml`, or add the secrets to
-your GitHub repository secrets under Settings > Security > Secrets and variables > Actions > Secrets.  
+your GitHub repository secrets under Settings > Security > Secrets and variables >
+Actions > Secrets.  
 The `GCP_PROJECT_ID` secret can just be replaced with your GCP project ID
 without any issues, as it is not sensitive.  
 The `GCP_SERVICE_ACCOUNT_KEY` secret *must* be added to your repository.  
@@ -106,16 +107,27 @@ they've been done once, they will never need to be touched again.
 
 1. Create a service account with Editor permissions
 
-This can be done at https://console.cloud.google.com under IAM > Service
+This can be done at https://console.cloud.google.com under IAM & Admin > Service
 accounts. You must then manage the service account's keys and create a new JSON
 key. Copy the contents of the JSON file into your GitHub repository's
 `GCP_SERVICE_ACCOUNT_KEY` secret.
 
-2. Enable the Cloud Build API, Artifact Registry, and Cloud Run for your GCP
-project
+2. Enable the Cloud Build API, Artifact Registry API, and Cloud Run API for your
+GCP project
 
-You may be prompted to upgrade your plan to pay-as-you-go, but the free
-quotas are quite generous and you can set alerts to go off if you go above them.
+Go to APIs & Services and click on the "Enable APIs and services" button at the top,
+or go to https://console.cloud.google.com/apis/library in your Google Cloud project,
+and search for these APIs. Select them, and enable them. You may be prompted to
+upgrade your plan to pay-as-you-go, but the free quotas are quite generous and you
+can set alerts to go off if you go above them.
+
+3. After the first successful deployment, manually allow unauthenticated
+invocations
+
+After the first successful deployment, you will likely get a 403 if you try to access
+the URL of the deployed Cloud Run service. To fix this, go to your Cloud Run service
+in the Cloud Console and go to the Security tab. Then switch the Authentication
+setting from "Require authentication" to "Allow unauthenticated invocations".
 
 ## Next steps
 
