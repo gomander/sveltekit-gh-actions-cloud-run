@@ -12,7 +12,9 @@ For convenience, the app also uses TypeScript and a `.editorconfig` file.
 
 ## Scaffolding a SvelteKit project
 
-Use the following command to create a basic SvelteKit app
+Use the following command to create a basic SvelteKit app in the `my-app`
+directory. You can skip the directory name at the end of the command to create
+the app in the current directory.
 
 ```bash
 npm create svelte@latest my-app
@@ -23,7 +25,8 @@ personal favourite Skeleton UI, or use this repository as a starting point.
 
 ## Dependencies and package managers
 
-Once you've created a project and installed dependencies with `npm i` (or `pnpm i` or `yarn`), start a development server:
+Once you've created a project and installed dependencies with `npm i` (or
+`pnpm i` or `yarn`), start a development server:
 
 ```bash
 npm run dev
