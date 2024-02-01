@@ -3,7 +3,7 @@ FROM node:lts-slim AS build
 # Create app directory and make it the working directory
 WORKDIR /app
 # Copy application dependency manifests to the container image
-COPY package*.json /app
+COPY package*.json /app/
 # Install dependencies
 RUN npm ci
 # Copy local code to the container image
