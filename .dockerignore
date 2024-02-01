@@ -1,0 +1,15 @@
+Dockerfile
+.dockerignore
+.git
+.gitignore
+README.md
+.npmrc
+.editorconfig
+.github
+.svelte-kit
+.vscode
+node_modules
+build
+tests
+.env
+.env.example
