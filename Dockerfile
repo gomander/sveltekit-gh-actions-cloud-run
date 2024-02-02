@@ -1,3 +1,6 @@
+# Define arguments passed to the build command
+ARG PUBLIC_ENV_VAR_ONE=default
+ARG PUBLIC_ENV_VAR_TWO=default
 # Use the official Node.js Debian image and give this container the name "build"
 FROM node:lts-slim AS build
 # Create app directory and make it the working directory
@@ -8,9 +11,6 @@ COPY package*.json /app/
 RUN npm ci
 # Copy local code to the container image
 COPY . .
-# Define arguments passed to the build command
-ARG PUBLIC_ENV_VAR_ONE
-ARG PUBLIC_ENV_VAR_TWO
 # Set environment variables
 ENV PUBLIC_ENV_VAR_ONE=$PUBLIC_ENV_VAR_ONE
 ENV PUBLIC_ENV_VAR_TWO=$PUBLIC_ENV_VAR_TWO

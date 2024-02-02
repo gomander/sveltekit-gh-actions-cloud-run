@@ -115,19 +115,19 @@ key. Copy the contents of the JSON file into your GitHub repository's
 2. Enable the Cloud Build API, Artifact Registry API, and Cloud Run API for your
 GCP project
 
-Go to APIs & Services and click on the "Enable APIs and services" button at the top,
-or go to https://console.cloud.google.com/apis/library in your Google Cloud project,
-and search for these APIs. Select them, and enable them. You may be prompted to
-upgrade your plan to pay-as-you-go, but the free quotas are quite generous and you
-can set alerts to go off if you go above them.
+Go to APIs & Services and click on the "Enable APIs and services" button at the
+top, or go to https://console.cloud.google.com/apis/library in your Google Cloud project, and search for these APIs. Select them, and enable them. You may be
+prompted to upgrade your plan to pay-as-you-go, but the free quotas are quite
+generous and you can set alerts to go off if you go above them.
 
 3. After the first successful deployment, manually allow unauthenticated
 invocations
 
-After the first successful deployment, you will likely get a 403 if you try to access
-the URL of the deployed Cloud Run service. To fix this, go to your Cloud Run service
-in the Cloud Console and go to the Security tab. Then switch the Authentication
-setting from "Require authentication" to "Allow unauthenticated invocations".
+After the first successful deployment, you may get a 403 if you try to access
+the URL of the deployed Cloud Run service. To fix this, go to your Cloud Run
+service in the Cloud Console and go to the Security tab. Then switch the
+Authentication setting from "Require authentication" to "Allow unauthenticated
+invocations".
 
 ## Next steps
 
