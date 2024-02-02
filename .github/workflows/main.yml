@@ -28,11 +28,11 @@ jobs:
         run: npm run build
       - name: Copy necessary files to build directory
         run: cp package*.json Dockerfile build
-      - name: Authenticate with Google Cloud Platform
+      - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-      - name: Install GCloud CLI
+      - name: Install Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-      - name: Build and deploy to Cloud Run
+      - name: Deploy to Cloud Run
         run: gcloud run deploy app --source build --platform managed --memory 128Mi --region ${{ vars.GCP_SERVICE_REGION }} --allow-unauthenticated --project ${{ vars.GCP_PROJECT_ID }}
