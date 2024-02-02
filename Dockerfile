@@ -1,6 +1,7 @@
 FROM node:lts-slim
-USER node
 WORKDIR /app
 COPY . .
 ENV NODE_ENV=production
+RUN npm ci
+USER node
 CMD ["node", "."]
