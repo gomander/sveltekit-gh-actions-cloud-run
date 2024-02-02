@@ -3,14 +3,14 @@ on:
     branches:
       - main
 jobs:
-  test:
+  test-build-deploy:
     runs-on: ubuntu-latest
     env:
       # For non-secret environment variables, there's no need to use GitHub's
-      # repository secrets. These are just here for demonstration purposes.
-      PUBLIC_ENV_VAR_ONE: ${{ secrets.ENV_VAR_ONE }}
-      PUBLIC_ENV_VAR_TWO: ${{ secrets.ENV_VAR_TWO }}
-      NODE_ENV: test
+      # repository variables. These are just here for demonstration purposes.
+      PUBLIC_ENV_VAR_ONE: ${{ vars.ENV_VAR_ONE }}
+      PUBLIC_ENV_VAR_TWO: ${{ vars.ENV_VAR_TWO }}
+      # For secret environment variables, use GitHub's repository secrets.
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -24,12 +24,10 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run tests
         run: npm run test
-  build-and-deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
+      - name: Build app
+        run: npm run build
+      - name: Copy necessary files to build directory
+        run: cp package*.json Dockerfile build
       - name: Authenticate with Google Cloud Platform
         uses: google-github-actions/auth@v2
         with:
@@ -37,8 +35,4 @@ jobs:
       - name: Install GCloud CLI
         uses: google-github-actions/setup-gcloud@v2
       - name: Build and deploy to Cloud Run
-        run: gcloud run deploy app --source . --platform managed --memory 128Mi --region us-central1 --allow-unauthenticated --project ${{ secrets.GCP_PROJECT_ID }} --set-env-vars PUBLIC_ENV_VAR_ONE=${{ secrets.ENV_VAR_ONE }},PUBLIC_ENV_VAR_TWO=${{ secrets.ENV_VAR_TWO }}
-# It is important that you not incude private secrets this way if you don't want
-# others with project Viewer permissions or greater in the GCP project to be
-# able to see them. Instead, use Secret Manager as described in the page linked
-# here: https://cloud.google.com/run/docs/configuring/services/secrets
+        run: gcloud run deploy app --source build --platform managed --memory 128Mi --region ${{ vars.GCP_SERVICE_REGION }} --allow-unauthenticated --project ${{ vars.GCP_PROJECT_ID }}
