@@ -14,7 +14,7 @@ For convenience, the app also uses TypeScript and a `.editorconfig` file.
 
 Use the following command to create a basic SvelteKit app in the `my-app`
 directory. You can skip the directory name at the end of the command to create
-the app in the current directory.
+the app in the working directory.
 
 ```bash
 npm create svelte@latest my-app
@@ -95,10 +95,9 @@ setup section.
 ## GitHub workflow
 
 The GitHub workflow can be found in `.github/workflows/main.yml`. It contains a
-`test` job and a `build-and-deploy` job. The `test` job will run first and check
-that all the end-to-end tests and unit tests succeed.  
-Once they do, the `build-and-deploy` job starts. It authenticates with Google
-and sends the project root to Google Cloud to build the Docker container.
+job called `test-build-deploy`. The job sets up the environment, runs the tests,
+builds the app, and deploys it to Google Cloud Run. This workflow is pretty
+basic and has lots of room to be improved and expanded upon.
 
 ## Dockerfile
 
@@ -121,13 +120,15 @@ service account" button at the top. Give it whatever name you want (I usually go
 with "GitHub Actions Deployer"), and give it the "Editor" role found in the
 "Basic" category. Back in the service accounts overview, click on the new
 service account and go to the "Keys" tab and create a new JSON key. Copy the
-contents of the JSON file into a new GitHub repository secret called `GCP_SERVICE_ACCOUNT_KEY`.
+contents of the JSON file into a new GitHub repository secret called
+`GCP_SERVICE_ACCOUNT_KEY`.
 
 2. Enable the Cloud Build API, Artifact Registry API, and Cloud Run API for your
 GCP project
 
 Go to APIs & Services and click on the "Enable APIs and services" button at the
-top, or go to https://console.cloud.google.com/apis/library in your Google Cloud project, and search for these APIs. Select them, and enable them. You may be
+top, or go to https://console.cloud.google.com/apis/library in your Google Cloud
+project, and search for these APIs. Select them, and enable them. You may be
 prompted to upgrade your plan to pay-as-you-go, but the free quotas are quite
 generous and you can set alerts to go off if you go above them.
 
@@ -153,7 +154,8 @@ Things that can be done to expand upon this pipeline:
 The GitHub Actions Deployer service account you created will have far more
 permissions than it needs. Your Cloud Run service will also run as the default
 compute service account, which will also have far more permissions than your
-service needs. Ideally, you should go back to IAM after a few weeks and several deployments, and fix this.  
+service needs. Ideally, you should go back to IAM after a few weeks and
+several deployments, and fix this.  
 Your GitHub Actions Deployer should have its unused permissions removed, and you
 should create a new service account for your Cloud Run service to act as.  
 Read more about best practices for service accounts at
