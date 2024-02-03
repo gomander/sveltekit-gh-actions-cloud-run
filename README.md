@@ -157,7 +157,60 @@ Things that can be done to expand upon this pipeline:
 * Add another GitHub workflow and add a service for a development branch
 * Add dynamic environment variables with dotenv
 
-## A note on service accounts
+### Point a Firebase Hosting site to your Cloud Run service
+
+If you want a nicer URL than the service URL created for your Cloud Run service
+(like https://app-magdwkhvxi-uc.a.run.app for example), or if you even have your
+own domain you want to use, then the easiest way is to set up Firebase Hosting.
+Firebase is included for free with your GCP project, but can't be found in the
+Google Cloud Console. Go to https://console.firebase.google.com and go through
+the steps to set up your GCP project with Firebase. Once Firebase is set up,
+find the "Hosting" section in the "Build" dropdown, and create a site.
+With Firebase Hosting enabled in your project, and a site created, create these
+two files in the root of your SvelteKit project.
+
+`.firebaserc`
+
+```json
+{
+  "projects": {
+    "default": "your-project-name-here"
+  }
+}
+```
+
+`firebase.json`
+
+```json
+{
+  "hosting": {
+    "site": "your-site-name-here",
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "your-service-name-here", // this project uses "app"
+          "region": "your-service-region-here"
+        }
+      }
+    ]
+  }
+}
+```
+
+Install the Firebase CLI.
+
+```bash
+npm i -g firebase-tools
+```
+
+Then run this command to apply the rewrite. This will only need to be done once.
+
+```bash
+firebase deploy --only hosting:your-site-name-here --project your-project-name-here
+```
+
+## A note on Google Cloud service accounts
 
 The GitHub Actions Deployer service account you created will have far more
 permissions than it needs. Your Cloud Run service will also run as the default
