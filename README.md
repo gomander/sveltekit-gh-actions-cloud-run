@@ -16,7 +16,7 @@ Use the following command to create a basic SvelteKit app in the `my-app`
 directory. You can skip the directory name at the end of the command to create
 the app in the working directory.
 
-```bash
+```sh
 npm create svelte@latest my-app
 ```
 
@@ -28,7 +28,7 @@ personal favourite Skeleton UI, or use this repository as a starting point.
 Once you've created a project and installed dependencies with `npm i` (or
 `pnpm i` or `yarn`), start a development server:
 
-```bash
+```sh
 npm run dev
 ```
 
@@ -37,39 +37,43 @@ NPM since it is the most widely used, but to change which one you use just
 delete `package-lock.json` and tweak `main.yml` and `Dockerfile`. To switch to
 PNPM for example, replace these lines in `main.yml`
 
-```bash
+```yml
 run: npm ci
 # ...
 run: npm run test
 # ...
 run: npm run build
+# ...
+run: cp package*.json Dockerfile build
 ```
 with
-```bash
+```yml
 run: npm i -g pnpm; pnpm i --frozen-lockfile
 # ...
 run: pnpm test
 # ...
 run: pnpm build
+# ...
+run: cp package.json pnpm-lock.yaml Dockerfile build
 ```
 and this line in `Dockerfile`
-```bash
+```dockerfile
 RUN npm ci
 ```
 with
-```bash
+```dockerfile
 RUN npm i -g pnpm && pnpm i --frozen-lockfile
 ```
 
 ## Testing
 
 First install Playwright's dependencies with
-```bash
+```sh
 npx playwright install --with-deps
 ```
 
 Run your tests locally with
-```bash
+```sh
 npm run test
 
 # or to run only unit tests
@@ -200,13 +204,13 @@ two files in the root of your SvelteKit project.
 
 Install the Firebase CLI.
 
-```bash
+```sh
 npm i -g firebase-tools
 ```
 
 Then run this command to apply the rewrite. This will only need to be done once.
 
-```bash
+```sh
 firebase deploy --only hosting:your-site-name-here --project your-project-name-here
 ```
 
