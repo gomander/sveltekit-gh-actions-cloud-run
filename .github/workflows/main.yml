@@ -37,6 +37,10 @@ jobs:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
       - name: Install Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+        # The following command fetches all untagged (in this case, all but the
+        # latest) images from Artifact Registry, then loops over them and
+        # deletes them. The reason for this is explained in the README in the
+        # GitHub Workflow section.
       - name: Clean up old versions
         run: gcloud container images list-tags "$GCP_SERVICE_REGION-docker.pkg.dev/$GCP_PROJECT_ID/cloud-run-source-deploy/$GCP_SERVICE_ID" --filter='-tags:*' --format='get(digest)' --limit=unlimited | awk '{print "'"$GCP_SERVICE_REGION"'-docker.pkg.dev/'"${GCP_PROJECT_ID}"'/cloud-run-source-deploy/'"$GCP_SERVICE_ID"'@" $1}' | xargs gcloud container images delete --quiet
       - name: Deploy to Cloud Run

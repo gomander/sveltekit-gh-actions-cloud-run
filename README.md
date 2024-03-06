@@ -104,28 +104,47 @@ above.
 
 ### GitHub variables and secrets for Google Cloud Platform configuration
 
-The `GCP_PROJECT_ID` and `GCP_SERVICE_REGION` variables can just be replaced
-inline with your GCP project ID and the desired service region without any
-issues, as they are not sensitive. Do note that the service region cannot be
-changed once set.  
-The `GCP_SERVICE_ACCOUNT_KEY` secret *must* be added to your repository secrets.
-How to get this key is explained below in the Google Cloud Platform project
-setup section.
+- `GCP_PROJECT_ID`: a variable containing your GCP project ID. This example uses
+"sveltekit-gh-actions-cloud-run". GCP project IDs are globally unique, so if you
+choose something less unique, you may get some numbers appended to yours.
+- `GCP_SERVICE_ID`: a variable containing the ID of your Cloud Run service. This
+can be anything you want. This example uses "app".
+- `GCP_SERVICE_REGION`: a variable containing the GCP region in which your Cloud
+Run service will be hosted. Select the region closest to you/your users. This
+example uses "us-central1".
+- `GCP_SERVICE_ACCOUNT_KEY`: a secret containing a JSON key for a service
+account with editor permission in your GCP project. How to get this key is
+explained below in the Google Cloud Platform project setup section.
+
+The `GCP_PROJECT_ID`, `GCP_SERVICE_ID`, and `GCP_SERVICE_REGION` variables can
+be replaced inline with your GCP project ID, your Cloud Run service ID, and
+the service region without any issues, as they are not sensitive. Do note that
+the service region cannot be changed once set.  
+The `GCP_SERVICE_ACCOUNT_KEY` secret *must* be added to your repository secrets,
+as it is extremely sensitive.
 
 ## GitHub workflow
 
 The GitHub workflow can be found in `.github/workflows/main.yml`. It contains a
-job called `test-build-deploy`. The job runs on pushes to the main branch, and
-it sets up the environment, runs the tests, builds the app, and deploys it to
+job called `test-build-deploy`. The job runs on pushes to the main branch. It
+sets up the environment, runs the tests, builds the app, and deploys it to
 Google Cloud Run. This workflow is pretty basic and has lots of room to be
-improved and expanded upon.
+improved and expanded upon.  
+The second-to-last command is a complicated mess that just deletes old unused
+versions of your app from Artifact Registry. This is done because Google will
+begin to charge you if you store more than 5 gigabytes there, and there is no
+easier way to delete unused images. You don't need to understand it, just make
+sure that if you replace the repository variables inline, you do so here as
+well.
 
 ## Dockerfile
 
-The Dockerfile is super basic, as Vite and Rollup do all the hard work getting
-the app production-ready. All it does is set up a Debian image running a
-long-term support Node.js version, install production dependencies, and run
-`index.js` in the built app as the preconfigured "node" user.
+The Dockerfile is super basic, as Vite does all the hard work getting the app
+production-ready. All it does is set up a Debian image running a long-term
+support Node.js version, install production dependencies, and run `index.js` in
+the built app as the preconfigured "node" user.  
+The "node" user does not have access to the file system, so if you need to save
+files on the server (NOT recommended!), delete this line.
 
 ## Google Cloud Platform project setup
 
@@ -213,11 +232,8 @@ two files in the root of your SvelteKit project.
 }
 ```
 
-Make sure the serviceId here matches with the serviceId specified in the
-`gcloud run deploy` command on the last line of `main.yml`. This repository uses
-"app".  
-The region is entirely optional, but it must match the one where you have
-deployed the service if present.
+Make sure `serviceId` and `region` here match your Cloud Run service's chosen ID
+and region. This repository uses "app" and "us-central1".
 
 Install the Firebase CLI.
 
