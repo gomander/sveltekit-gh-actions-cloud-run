@@ -38,6 +38,6 @@ jobs:
       - name: Install Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
       - name: Clean up old versions
-        run: gcloud container images list-tags "gcr.io/$GCP_PROJECT_ID/$GCP_SERVICE_ID" --filter='-tags:*' --format='get(digest)' --limit=unlimited | awk '{print "gcr.io/'"$GCP_PROJECT_ID"'/'"$GCP_SERVICE_ID"'@" $1}' | xargs gcloud container images delete --quiet
+        run: gcloud container images list-tags "$GCP_SERVICE_REGION-docker.pkg.dev/$GCP_PROJECT_ID/cloud-run-source-deploy/$GCP_SERVICE_ID" --filter='-tags:*' --format='get(digest)' --limit=unlimited | awk '{print "'"$GCP_SERVICE_REGION"'-docker.pkg.dev/'"${GCP_PROJECT_ID}"'/cloud-run-source-deploy/'"$GCP_SERVICE_ID"'@" $1}' | xargs gcloud container images delete --quiet
       - name: Deploy to Cloud Run
         run: gcloud run deploy "$GCP_SERVICE_ID" --source build --platform managed --memory 128Mi --region "$GCP_SERVICE_REGION" --allow-unauthenticated --project "$GCP_PROJECT_ID"
