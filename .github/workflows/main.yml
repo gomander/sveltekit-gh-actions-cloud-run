@@ -10,14 +10,17 @@ jobs:
       # repository variables. These are just here for demonstration purposes.
       PUBLIC_ENV_VAR_ONE: ${{ vars.ENV_VAR_ONE }}
       PUBLIC_ENV_VAR_TWO: ${{ vars.ENV_VAR_TWO }}
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      GCP_SERVICE_ID: ${{ vars.GCP_SERVICE_ID }}
+      GCP_SERVICE_REGION: ${{ vars.GCP_SERVICE_REGION }}
       # For secret environment variables, use GitHub's repository secrets.
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Set up Node.js 20
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: lts/*
       - name: Install dependencies
         run: npm ci
       - name: Set up Playwright
@@ -34,5 +37,7 @@ jobs:
           credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
       - name: Install Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+      - name: Clean up old versions
+        run: gcloud container images list-tags gcr.io/$GCP_PROJECT_ID/$GCP_SERVICE_ID --filter='-tags:*' --format='get(digest)' --limit=unlimited | awk '{print "gcr.io/'"$GCP_PROJECT_ID"'/'"$GCP_SERVICE_ID"'@" $1}' | xargs gcloud container images delete --quiet
       - name: Deploy to Cloud Run
-        run: gcloud run deploy app --source build --platform managed --memory 128Mi --region ${{ vars.GCP_SERVICE_REGION }} --allow-unauthenticated --project ${{ vars.GCP_PROJECT_ID }}
+        run: gcloud run deploy $GCP_SERVICE_ID --source build --platform managed --memory 128Mi --region $GCP_SERVICE_REGION --allow-unauthenticated --project $GCP_PROJECT_ID
