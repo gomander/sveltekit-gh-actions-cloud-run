@@ -1,8 +1,5 @@
 // @ts-check
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 
-export default defineConfig({
-  plugins: [sveltekit()],
-  test: { include: ['tests/unit/*.{test,spec}.{js,ts}'] }
-});
+export default defineConfig({ plugins: [sveltekit()] });
